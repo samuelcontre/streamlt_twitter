@@ -70,30 +70,30 @@ def train_models(df):
     return tfidf, logreg, rf, metrics, X_test, y_test
 
 # Título de la app
-st.title("🔮 Predicción de Tuits Virales con IA y Análisis de Sentimiento")
+st.title(" Predicción de Tuits Virales con IA y Análisis de Sentimiento")
 
 # Cargar datos y entrenar
 df = load_data()
 tfidf, logreg, rf, metrics, X_test, y_test = train_models(df)
 
 # Visualizaciones EDA
-st.subheader("📊 Distribución de Etiquetas")
+st.subheader(" Distribución de Etiquetas")
 counts = df['Label'].value_counts().reset_index()
 counts.columns = ['Label','Count']
 fig = px.bar(counts, x='Label', y='Count', color='Label', title='Distribución de Sentimientos / Viralidad')
 st.plotly_chart(fig)
 
-st.subheader("☁️ Nube de Palabras General")
+st.subheader("Nube de Palabras General")
 all_text = " ".join(df['clean_text'])
 wc = WordCloud(width=800, height=400, background_color='white').generate(all_text)
 st.image(wc.to_array(), use_column_width=True)
 
-st.subheader("📈 Métricas de Modelos")
+st.subheader(" Métricas de Modelos")
 for name, m in metrics.items():
     st.write(f"**{name}** - Accuracy: {m['accuracy']:.3f}, F1-score: {m['f1']:.3f}")
 
 # Interfaz de predicción
-st.subheader("📝 Predicción de Viralidad")
+st.subheader(" Predicción de Viralidad")
 model_choice = st.radio("Selecciona el modelo:", ('Logistic Regression','Random Forest'))
 user_tweet = st.text_area("Escribe un tweet para predecir:")
 
@@ -105,13 +105,13 @@ if st.button("Predecir") and user_tweet:
     st.success(f"La predicción es: {pred}")
 
 # Mostrar reporte de clasificación
-st.subheader("🧾 Reporte de Clasificación de Test Set")
+st.subheader(" Reporte de Clasificación de Test Set")
 report = classification_report(y_test, (logreg.predict(X_test) if model_choice=='Logistic Regression' else rf.predict(X_test)), output_dict=True)
 rep_df = pd.DataFrame(report).transpose()
 st.dataframe(rep_df)
 
 # Matriz de confusión
-st.subheader("🔳 Matriz de Confusión")
+st.subheader(" Matriz de Confusión")
 cm = confusion_matrix(y_test, logreg.predict(X_test) if model_choice=='Logistic Regression' else rf.predict(X_test))
 cm_df = pd.DataFrame(cm, index=model.classes_, columns=model.classes_)
 st.dataframe(cm_df)
